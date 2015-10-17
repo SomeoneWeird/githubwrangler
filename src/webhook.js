@@ -10,7 +10,7 @@ export default function webhook(org, req) {
     let hookDataEvents = hookData.events;
     delete hookData.events;
 
-    req("GET", `orgs/${org}/repos`, null, function(err, repositories) {
+    req("GET", `orgs/${org}/repos?per_page=1000`, null, function(err, repositories) {
 
       if(err) {
         return done(err);
@@ -44,16 +44,8 @@ export default function webhook(org, req) {
 
           let data = repoData[repoName];
 
-          let found    = false;
-          let outdated = false;
-
-          data.forEach(hook => {
-
-            if(hookData.url == hook.config.url) {
-              found = true;
-              return;
-            }
-
+          let found = data.some(hook => {
+            return hookData.url == hook.config.url;
           });
 
           if(found) {

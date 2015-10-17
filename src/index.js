@@ -6,6 +6,7 @@ import ghauth  from "ghauth"
 import request from "request";
 
 import webhook from "./webhook";
+import team    from "./team";
 
 const filename = process.argv[2];
 
@@ -44,7 +45,8 @@ ghauth({
   }
 
   const headers = {
-    'User-Agent': 'ghdoctor-' + require(path.resolve(__dirname, "../package.json")).version
+    'User-Agent': 'ghdoctor-' + require(path.resolve(__dirname, "../package.json")).version,
+    'Accept':     'application/vnd.github.ironman-preview+json'
   }
 
   function req(method, endpoint, body, callback) {
@@ -57,12 +59,13 @@ ghauth({
       headers,
       json: true
     }, function(err, data, body) {
-      return callback(err, body);
+      return callback(err, body, data.statusCode);
     });
   }
 
   const types = {
-    webhook: webhook(file.org, req)
+    webhook: webhook(file.org, req),
+    team:    team(file.org, req)
   }
 
   async.eachSeries(file.checks, function(e, done) {
