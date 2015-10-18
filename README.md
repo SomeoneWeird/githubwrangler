@@ -33,15 +33,7 @@ Example:
 }
 ```
 
-```
-➜  githubdoctor git:(master) ✗ ./lib/index.js example.json
- ✘  Webhook 'Slack - Engineering' not found for myorganisation/testrepo
-:   Would you like to add this webhook? (y/n):  y
- ✓  Successfully added webhook to myorganisation/testrepo
- ✘  Team 'ci' does not have access to myorganisation/testrepo
-:   Would you like to add this team? (y/n):  y
- ✓  Successfully added team to myorganisation/testrepo
- ```
+![Example when running](http://i.imgur.com/1zrT7Ve.png)
 
 # Type of checks
 

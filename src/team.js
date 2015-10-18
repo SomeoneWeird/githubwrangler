@@ -33,7 +33,9 @@ export default function team(org, req) {
 
         const repoNames = repositories.map(r => r.name);
 
-        async.eachSeries(repoNames, function(repoName, done) {
+        let missingRepos = [];
+
+        async.each(repoNames, function(repoName, done) {
 
           req("GET", `teams/${teamId}/repos/${org}/${repoName}`, null, function(err, response, statusCode) {
 
@@ -41,9 +43,21 @@ export default function team(org, req) {
               return done(err);
             }
 
-            if(statusCode === 204) {
-              return done();
+            if(statusCode !== 204) {
+              missingRepos.push(repoName);
             }
+
+            return done();
+
+          });
+
+        }, function(err) {
+
+          if(err) {
+            return done(err);
+          }
+
+          async.eachSeries(missingRepos, function(repoName, done) {
 
             console.log(" ✘ ".red, `Team '${checkData.team}' does not have access to ${org}/${repoName}`);
 
@@ -85,9 +99,9 @@ export default function team(org, req) {
 
             });
 
-          });
+          }, done);
 
-        }, done);
+        });
 
       });
 

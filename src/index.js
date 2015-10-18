@@ -86,6 +86,9 @@ ghauth({
       process.exit(1);
     }
 
+    console.log("✓✓✓✓✓✓✓✓✓✓✓✓✓✓✓".green, "All good 👌");
+    process.exit();
+
   });
 
 });
