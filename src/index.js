@@ -3,23 +3,27 @@
 import path    from "path";
 import async   from "async";
 import ghauth  from "ghauth"
+import yargs   from "yargs";
 
 import utils from "./utils";
 
 import webhook from "./webhook";
 import team    from "./team";
 
-const filename = process.argv[2];
+const argv = yargs
+  .usage("Usage: $0 -f [filename]")
+  .demand([ 'f' ])
+  .describe('f', 'configuration file')
+  .describe('y', 'Automatically perform action(s)')
+  .alias('f', 'file')
+  .alias('y', 'yes')
+  .argv;
 
-if(!filename) {
-  console.error("Please pass a filename as an argument.");
-  process.exit(1);
-}
 
 let file;
 
 try {
-  file = require(path.resolve(process.cwd(), filename));
+  file = require(path.resolve(process.cwd(), argv.file));
 } catch(e) {
   console.error(`There was an error loading your file: ${e}`);
   process.exit(1);
@@ -43,8 +47,8 @@ ghauth({
   const _utils = utils(file.org, authData);
 
   const types = {
-    webhook: webhook(file.org, _utils),
-    team:    team(file.org, _utils)
+    webhook: webhook(file.org, _utils, argv),
+    team:    team(file.org, _utils, argv)
   }
 
   async.eachSeries(file.checks, function(e, done) {

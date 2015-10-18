@@ -3,7 +3,7 @@ import prompt from "prompt";
 
 import "colors";
 
-export default function team(org, utils) {
+export default function team(org, utils, argv) {
   
   return function(checkData, done) {
 
@@ -59,23 +59,7 @@ export default function team(org, utils) {
 
             console.log(" ✘ ".red, `Team '${checkData.team}' does not have access to ${org}/${repoName}`);
 
-            prompt.message = "";
-
-            prompt.get({
-              properties: {
-                run: {
-                  description: "  Would you like to add this team? (y/n)"
-                }
-              }
-            }, function(err, result) {
-
-              if(err) {
-                return done(err);
-              }
-
-              if(result.run !== 'y' && result.run !== 'yes') {
-                return done();
-              }
+            function doAction() {
 
               utils.req("PUT", `teams/${teamId}/repos/${org}/${repoName}`, {
                 permission: checkData.access
@@ -94,6 +78,32 @@ export default function team(org, utils) {
                 done();
 
               });
+
+            }
+
+            if(argv.yes) {
+              return doAction();
+            }
+
+            prompt.message = "";
+
+            prompt.get({
+              properties: {
+                run: {
+                  description: "  Would you like to add this team? (y/n)"
+                }
+              }
+            }, function(err, result) {
+
+              if(err) {
+                return done(err);
+              }
+
+              if(result.run !== 'y' && result.run !== 'yes') {
+                return done();
+              }
+
+              return doAction();
 
             });
 

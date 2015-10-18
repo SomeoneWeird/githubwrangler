@@ -3,7 +3,7 @@ import prompt from "prompt";
 
 import "colors";
 
-export default function webhook(org, utils) {
+export default function webhook(org, utils, argv) {
   
   return function(hookData, done) {
 
@@ -52,23 +52,7 @@ export default function webhook(org, utils) {
 
           console.log(" ✘ ".red, `Webhook '${hookData.name || hookData.url}' not found for ${org}/${repoName}`);
 
-          prompt.message = "";
-
-          prompt.get({
-            properties: {
-              run: {
-                description: "  Would you like to add this webhook? (y/n)"
-              }
-            }
-          }, function(err, result) {
-
-            if(err) {
-              return done(err);
-            }
-
-            if(result.run !== 'y' && result.run !== 'yes') {
-              return done();
-            }
+          function doAction() {
 
             utils.req("POST", `repos/${org}/${repoName}/hooks`, {
               name: "web",
@@ -94,6 +78,32 @@ export default function webhook(org, utils) {
               done();
 
             });
+
+          }
+
+          if(argv.yes) {
+            return doAction();
+          }
+
+          prompt.message = "";
+
+          prompt.get({
+            properties: {
+              run: {
+                description: "  Would you like to add this webhook? (y/n)"
+              }
+            }
+          }, function(err, result) {
+
+            if(err) {
+              return done(err);
+            }
+
+            if(result.run !== 'y' && result.run !== 'yes') {
+              return done();
+            }
+
+            return doAction();
 
           });
 

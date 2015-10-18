@@ -9,7 +9,9 @@ npm install -g githubwrangler
 
 # Usage
 
-`githubwrangler` requires you pass a json file as the first parameter.
+Save a configuration file, then call `githubwrangler` and pass it as a parameter.
+
+`githubwrangler -f example.json`
 
 Example:
 
