@@ -26,8 +26,8 @@ try {
 }
 
 ghauth({
-  configName: "ghdoctor",
-  note: "Github Doctor",
+  configName: "githubwrangler",
+  note: "Github Wrangler",
   scopes: [
     "repo",
     "admin:repo_hook",
@@ -40,11 +40,11 @@ ghauth({
     process.exit(1);
   }
 
-  utils = utils(file.org, authData);
+  const _utils = utils(file.org, authData);
 
   const types = {
-    webhook: webhook(file.org, utils),
-    team:    team(file.org, utils)
+    webhook: webhook(file.org, _utils),
+    team:    team(file.org, _utils)
   }
 
   async.eachSeries(file.checks, function(e, done) {

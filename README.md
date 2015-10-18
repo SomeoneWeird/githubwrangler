@@ -1,15 +1,15 @@
-# githubdoctor
+# githubwrangler
 Program for managing Github repository expectations
 
 # Installation
 
 ```
-npm install -g githubdoctor
+npm install -g githubwrangler
 ```
 
 # Usage
 
-`githubdoctor` requires you pass a json file as the first parameter.
+`githubwrangler` requires you pass a json file as the first parameter.
 
 Example:
 

@@ -9,7 +9,7 @@ export default function(org, authData) {
   }
 
   const headers = {
-    'User-Agent': 'ghdoctor-' + require(path.resolve(__dirname, "../package.json")).version,
+    'User-Agent': 'githubwrangler-' + require(path.resolve(__dirname, "../package.json")).version,
     'Accept':     'application/vnd.github.ironman-preview+json'
   }
 

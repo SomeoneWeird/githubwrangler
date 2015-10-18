@@ -1,5 +1,5 @@
 {
-  "name": "githubdoctor",
+  "name": "githubwrangler",
   "version": "0.0.1",
   "description": "Program for managing Github repository expectations",
   "bin": "lib/index.js",
@@ -11,7 +11,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/SomeoneWeird/githubdoctor.git"
+    "url": "git+ssh://git@github.com/SomeoneWeird/githubwrangler.git"
   },
   "keywords": [
     "github",
@@ -21,9 +21,9 @@
   "author": "Adam Brady <adam@boxxen.org>",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/SomeoneWeird/githubdoctor/issues"
+    "url": "https://github.com/SomeoneWeird/githubwrangler/issues"
   },
-  "homepage": "https://github.com/SomeoneWeird/githubdoctor#readme",
+  "homepage": "https://github.com/SomeoneWeird/githubwrangler#readme",
   "dependencies": {
     "async": "^1.4.2",
     "babel": "^5.8.23",
