@@ -3,7 +3,8 @@
 import path    from "path";
 import async   from "async";
 import ghauth  from "ghauth"
-import request from "request";
+
+import utils from "./utils";
 
 import webhook from "./webhook";
 import team    from "./team";
@@ -39,33 +40,11 @@ ghauth({
     process.exit(1);
   }
 
-  const auth = {
-    user: authData.user,
-    pass: authData.token
-  }
-
-  const headers = {
-    'User-Agent': 'ghdoctor-' + require(path.resolve(__dirname, "../package.json")).version,
-    'Accept':     'application/vnd.github.ironman-preview+json'
-  }
-
-  function req(method, endpoint, body, callback) {
-    const url = `https://api.github.com/${endpoint}`;
-    request({
-      url,
-      auth,
-      body,
-      method,
-      headers,
-      json: true
-    }, function(err, data, body) {
-      return callback(err, body, data.statusCode);
-    });
-  }
+  utils = utils(file.org, authData);
 
   const types = {
-    webhook: webhook(file.org, req),
-    team:    team(file.org, req)
+    webhook: webhook(file.org, utils),
+    team:    team(file.org, utils)
   }
 
   async.eachSeries(file.checks, function(e, done) {

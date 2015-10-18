@@ -3,26 +3,24 @@ import prompt from "prompt";
 
 import "colors";
 
-export default function webhook(org, req) {
+export default function webhook(org, utils) {
   
   return function(hookData, done) {
 
     let hookDataEvents = hookData.events;
     delete hookData.events;
 
-    req("GET", `orgs/${org}/repos?per_page=1000`, null, function(err, repositories) {
+    utils.getRepositories(function(err, repositories) {
 
       if(err) {
         return done(err);
       }
 
-      const repoNames = repositories.map(r => r.name);
-
       let repoData = [];
 
-      async.each(repoNames, function(repoName, done) {
+      async.each(repositories, function(repoName, done) {
 
-        req("GET", `repos/${org}/${repoName}/hooks`, null, function(err, hooks) {
+        utils.req("GET", `repos/${org}/${repoName}/hooks`, null, function(err, hooks) {
 
           if(err) {
             return done(err);
@@ -72,7 +70,7 @@ export default function webhook(org, req) {
               return done();
             }
 
-            req("POST", `repos/${org}/${repoName}/hooks`, {
+            utils.req("POST", `repos/${org}/${repoName}/hooks`, {
               name: "web",
               config: {
                 url: hookData.url,

@@ -3,11 +3,11 @@ import prompt from "prompt";
 
 import "colors";
 
-export default function team(org, req) {
+export default function team(org, utils) {
   
   return function(checkData, done) {
 
-    req("GET", `orgs/${org}/teams`, null, function(err, teams) {
+    utils.req("GET", `orgs/${org}/teams`, null, function(err, teams) {
 
       if(err) {
         return done(err);
@@ -25,19 +25,17 @@ export default function team(org, req) {
         return done(`Cannot find team ${checkData.team}`);
       }
 
-      req("GET", `orgs/${org}/repos?per_page=1000`, null, function(err, repositories) {
+      utils.getRepositories(function(err, repositories) {
 
         if(err) {
           return done(err);
         }
 
-        const repoNames = repositories.map(r => r.name);
-
         let missingRepos = [];
 
-        async.each(repoNames, function(repoName, done) {
+        async.each(repositories, function(repoName, done) {
 
-          req("GET", `teams/${teamId}/repos/${org}/${repoName}`, null, function(err, response, statusCode) {
+          utils.req("GET", `teams/${teamId}/repos/${org}/${repoName}`, null, function(err, response, statusCode) {
 
             if(err) {
               return done(err);
@@ -79,7 +77,7 @@ export default function team(org, req) {
                 return done();
               }
 
-              req("PUT", `teams/${teamId}/repos/${org}/${repoName}`, {
+              utils.req("PUT", `teams/${teamId}/repos/${org}/${repoName}`, {
                 permission: checkData.access
               }, function(err, response, statusCode) {
 
