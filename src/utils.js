@@ -31,10 +31,8 @@ export default function(org, authData) {
 
   function getRepositories(callback) {
     if(repoNames && repoData) {
-      console.log('using cached repo data');
       return callback(null, repoNames, repoData);
     }
-    console.log('not using cached repo data');
     req("GET", `orgs/${org}/repos?per_page=1000`, null, function(err, repositories) {
       if(err) return callback(err);
       repoNames = repositories.map(r => r.name);
