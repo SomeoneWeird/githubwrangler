@@ -89,21 +89,13 @@ export default function team(org, utils, argv) {
               return doAction();
             }
 
-            prompt.message = "";
-
-            prompt.get({
-              properties: {
-                run: {
-                  description: "  Would you like to add this team? (y/n)"
-                }
-              }
-            }, function(err, result) {
+            utils.ask("  Would you like to add this team? (y/n)", function(err, run) {
 
               if(err) {
                 return done(err);
               }
 
-              if(result.run !== 'y' && result.run !== 'yes') {
+              if(!run) {
                 return done();
               }
 

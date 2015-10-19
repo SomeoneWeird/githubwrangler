@@ -1,5 +1,6 @@
 import request from "request";
 import path    from "path";
+import prompt  from "prompt";
 
 export default function(org, authData) {
   
@@ -41,9 +42,38 @@ export default function(org, authData) {
     });
   }
 
+  function ask(description, callback) {
+
+    prompt.message = "";
+
+    prompt.get({
+      properties: {
+        run: {
+          description
+        }
+      }
+    }, function(err, result) {
+
+      if(err) {
+        return callback(err);
+      }
+
+      let run = false;
+
+      if(result.run === 'y' || result.run === 'yes') {
+        run = true;
+      }
+
+      return callback(null, run);
+
+    });
+
+  }
+
   return {
     req,
-    getRepositories
+    getRepositories,
+    ask
   }
 
 }

@@ -92,21 +92,13 @@ export default function webhook(org, utils, argv) {
               return doUpdate();
             }
 
-            prompt.message = "";
-
-            prompt.get({
-              properties: {
-                run: {
-                  description: "  Would you like to update this webhook? (y/n)"
-                }
-              }
-            }, function(err, result) {
+            utils.ask("  Would you like to update this webhook? (y/n)", function(err, run) {
 
               if(err) {
                 return done(err);
               }
 
-              if(result.run !== 'y' && result.run !== 'yes') {
+              if(!run) {
                 return done();
               }
 
@@ -147,21 +139,13 @@ export default function webhook(org, utils, argv) {
               return doCreate();
             }
 
-            prompt.message = "";
-
-            prompt.get({
-              properties: {
-                run: {
-                  description: "  Would you like to add this webhook? (y/n)"
-                }
-              }
-            }, function(err, result) {
+            utils.ask("  Would you like to add this webhook? (y/n)", function(err, run) {
 
               if(err) {
                 return done(err);
               }
 
-              if(result.run !== 'y' && result.run !== 'yes') {
+              if(!run) {
                 return done();
               }
 
