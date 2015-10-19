@@ -1,5 +1,6 @@
 import async  from "async";
 import prompt from "prompt";
+import assert from "assert";
 
 import "colors";
 
@@ -42,19 +43,135 @@ export default function webhook(org, utils, argv) {
 
           let data = repoData[repoName];
 
-          let found = data.some(hook => {
-            return hookData.url == hook.config.url;
-          });
+          let foundHook;
 
-          if(found) {
+          for(var i = 0; i < data.length; i++) {
+            if(hookData.url == data[i].config.url) {
+              foundHook = data[i];
+              break;
+            }
+          }
+
+          if(foundHook) {
+            checkUpdate();
+          } else {
+            promptCreate();
+          }
+
+          function checkUpdate() {
+
+            let outdated = false;
+
+            try {
+              foundHook.events = foundHook.events.sort();
+              hookDataEvents = hookDataEvents.sort();
+              assert.deepEqual(foundHook.events, hookDataEvents);
+            } catch(e) {
+              outdated = true;
+            }
+
+            if(!foundHook.active) {
+              outdated = true;
+            }
+
+            if(outdated) {
+              return promptUpdate();
+            }
+
             return done();
+
           }
 
-          if(!argv.quiet) {
-            console.log(" ✘ ".red, `Webhook '${hookData.name || hookData.url}' not found for ${org}/${repoName}`);
+          function promptUpdate() {
+
+            if(!argv.quiet) {
+              console.log(" ✘ ".red, `Webhook '${hookData.name || hookData.url}' seems to be outdated for ${org}/${repoName}`);
+            }
+
+            if(argv.yes) {
+              return doUpdate();
+            }
+
+            prompt.message = "";
+
+            prompt.get({
+              properties: {
+                run: {
+                  description: "  Would you like to update this webhook? (y/n)"
+                }
+              }
+            }, function(err, result) {
+
+              if(err) {
+                return done(err);
+              }
+
+              if(result.run !== 'y' && result.run !== 'yes') {
+                return done();
+              }
+
+              return doUpdate();
+
+            });
+
           }
 
-          function doAction() {
+          function doUpdate() {
+
+            utils.req("PATCH", `repos/${org}/${repoName}/hooks/${foundHook.id}`, {
+              events: hookDataEvents,
+              active: true
+            }, function(err) {
+
+              if(err) {
+                return done(err);
+              }
+
+              if(!argv.quiet) {
+                console.log(" ✓ ".green, `Successfully modified webhook for ${org}/${repoName}`);
+              }
+
+              return done();
+
+            });
+
+          }
+
+          function promptCreate() {
+
+            if(!argv.quiet) {
+              console.log(" ✘ ".red, `Webhook '${hookData.name || hookData.url}' not found for ${org}/${repoName}`);
+            }
+
+            if(argv.yes) {
+              return doCreate();
+            }
+
+            prompt.message = "";
+
+            prompt.get({
+              properties: {
+                run: {
+                  description: "  Would you like to add this webhook? (y/n)"
+                }
+              }
+            }, function(err, result) {
+
+              if(err) {
+                return done(err);
+              }
+
+              if(result.run !== 'y' && result.run !== 'yes') {
+                return done();
+              }
+
+              return doCreate();
+
+            });
+
+          }
+
+          function doCreate() {
 
             utils.req("POST", `repos/${org}/${repoName}/hooks`, {
               name: "web",
@@ -84,32 +201,6 @@ export default function webhook(org, utils, argv) {
             });
 
           }
-
-          if(argv.yes) {
-            return doAction();
-          }
-
-          prompt.message = "";
-
-          prompt.get({
-            properties: {
-              run: {
-                description: "  Would you like to add this webhook? (y/n)"
-              }
-            }
-          }, function(err, result) {
-
-            if(err) {
-              return done(err);
-            }
-
-            if(result.run !== 'y' && result.run !== 'yes') {
-              return done();
-            }
-
-            return doAction();
-
-          });
 
         }, done);
 
