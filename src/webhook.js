@@ -50,7 +50,9 @@ export default function webhook(org, utils, argv) {
             return done();
           }
 
-          console.log(" ✘ ".red, `Webhook '${hookData.name || hookData.url}' not found for ${org}/${repoName}`);
+          if(!argv.quiet) {
+            console.log(" ✘ ".red, `Webhook '${hookData.name || hookData.url}' not found for ${org}/${repoName}`);
+          }
 
           function doAction() {
 
@@ -73,7 +75,9 @@ export default function webhook(org, utils, argv) {
                 return done();
               }
 
-              console.log(" ✓ ".green, `Successfully added webhook to ${org}/${repoName}`);
+              if(!argv.quiet) {
+                console.log(" ✓ ".green, `Successfully added webhook to ${org}/${repoName}`);
+              }
 
               done();
 

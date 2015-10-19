@@ -57,7 +57,9 @@ export default function team(org, utils, argv) {
 
           async.eachSeries(missingRepos, function(repoName, done) {
 
-            console.log(" ✘ ".red, `Team '${checkData.team}' does not have access to ${org}/${repoName}`);
+            if(!argv.quiet) {
+              console.log(" ✘ ".red, `Team '${checkData.team}' does not have access to ${org}/${repoName}`);
+            }
 
             function doAction() {
 
@@ -73,7 +75,9 @@ export default function team(org, utils, argv) {
                   return done(`Error adding team: ${response}`);
                 }
 
-                console.log(" ✓ ".green, `Successfully added team to ${org}/${repoName}`);
+                if(!argv.quiet) {
+                  console.log(" ✓ ".green, `Successfully added team to ${org}/${repoName}`);
+                }
 
                 done();
 

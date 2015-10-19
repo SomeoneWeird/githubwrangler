@@ -15,8 +15,10 @@ const argv = yargs
   .demand([ 'f' ])
   .describe('f', 'configuration file')
   .describe('y', 'Automatically perform action(s)')
+  .describe('q', 'Suppress all stdout')
   .alias('f', 'file')
   .alias('y', 'yes')
+  .alias('q', 'quiet')
   .argv;
 
 
@@ -69,7 +71,10 @@ ghauth({
       process.exit(1);
     }
 
-    console.log("✓✓✓✓✓✓✓✓✓✓✓✓✓✓✓".green, "All good 👌");
+    if(!argv.quiet) {
+      console.log("✓✓✓✓✓✓✓✓✓✓✓✓✓✓✓".green, "All good 👌");
+    }
+
     process.exit();
 
   });
