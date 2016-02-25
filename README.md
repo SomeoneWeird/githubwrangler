@@ -30,6 +30,11 @@ Example:
       type: "team",
       team: "ci",
       access: "pull"
+    },
+    {
+      type: "label",
+      name: "do not merge",
+      colour: "FF0000"
     }
   ]
 }
@@ -53,3 +58,8 @@ Options:
 
 * **team** (string) - The slug for the team you wish to add.
 * **access** (string) - Level of access you wish to give this team ('pull', 'push' or 'admin')
+
+## label
+
+* **name** (string) - Name of the label
+* **color** (string) - Hex colour of the label

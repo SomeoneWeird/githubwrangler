@@ -9,6 +9,7 @@ import utils from "./utils";
 
 import webhook from "./webhook";
 import team    from "./team";
+import label   from "./label";
 
 const argv = yargs
   .usage("Usage: $0 -f [filename]")
@@ -50,7 +51,8 @@ ghauth({
 
   const types = {
     webhook: webhook(file.org, _utils, argv),
-    team:    team(file.org, _utils, argv)
+    team:    team(file.org, _utils, argv),
+    label:   label(file.org, _utils, argv)
   }
 
   async.eachSeries(file.checks, function(e, done) {
