@@ -1,6 +1,6 @@
 {
   "name": "githubwrangler",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Program for managing Github repository expectations",
   "bin": "lib/index.js",
   "main": "lib/index.js",
