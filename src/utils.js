@@ -28,17 +28,23 @@ export default function(org, authData) {
     });
   }
 
-  let repoNames, repoData;
+  let repoNames, repoData = [];
 
-  function getRepositories(callback) {
+  function getRepositories(callback, page = 1) {
     if(repoNames && repoData) {
       return callback(null, repoNames, repoData);
     }
-    req("GET", `orgs/${org}/repos?per_page=1000`, null, function(err, repositories) {
-      if(err) return callback(err);
-      repoNames = repositories.map(r => r.name);
-      repoData = repositories;
+    function done() {
+      repoNames = repoData.map(r => r.name);
       return callback(null, repoNames, repoData);
+    }
+    req("GET", `orgs/${org}/repos?per_page=100&page=${page}`, null, function(err, repositories) {
+      if(err) return callback(err);
+      repoData = repoData.concat(repositories);
+      if(repositories.length === 0) {
+        return done();
+      }
+      getRepositories(callback, ++page);
     });
   }
 
